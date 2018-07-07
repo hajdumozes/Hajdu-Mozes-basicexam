@@ -23,6 +23,8 @@ for (var k in arr) {
   }
 }
 avg = Math.round(sum / arr.length);
+console.log('Az első öt feladat tömbje:');
+console.log(arr);
 console.log(`A legkisebb szám ${smallest}, a legnagyobb pedig ${biggest}.`);
 console.log(`A számok összege ${sum}, átlaguk pedig kerekítve ${avg}.`);
 console.log(`A páros elemek száma ${even}.`);

@@ -17,7 +17,7 @@ function advBubbleSortAsc(advBubbleArray) {
   }
   return advBubbleArray;
 }
-
+console.log('Buborékos rendezés:');
 console.log(advBubbleSortAsc([23, 52, 74, 1230, 85, 30, 42, 7, 89]));
 
 // ! 12
@@ -57,7 +57,7 @@ function splitByType(inputArray) {
   };
 }
 
-
+console.log('Buborékos rendezés + nem számok hátrarakása:');
 console.log(advBubbleSortDesc([23, 52, 74, 1230, 85, 30, 42, 7, 89, 0, 'apple', true, 'samsung']));
 
 // ! 13
@@ -101,6 +101,7 @@ function combineFunctionsSplitAndMerge(Array) {
   return mergedArray;
 }
 
+console.log('Számok és string-ek felsorolása felváltva:');
 console.log(combineFunctionsSplitAndMerge([3, 6, 12, 'apple', 'samsung', 42,
   'lg', 'lenovo', 'sony', 100]));
 
@@ -121,4 +122,6 @@ function oddOrEven(oddAndEven) {
     even: evenArray
   };
 }
+
+console.log('Páros vagy páratlan tömbök:');
 console.log(oddOrEven([32, 2, 634, 312, 463, 8642, 41, 748, 11, 63, 45, 832, 232]));

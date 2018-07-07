@@ -117,4 +117,6 @@ function consoleLogSearchResultMultiple(inputArrayCLGMultiple) {
     console.log(`A tömb nem tartalmazza a következő számot: ${searched}`);
   }
 }
+console.log('A 10. feladathoz készített tömb:');
+console.log(arrayUnordered);
 consoleLogSearchResultMultiple(arrayUnordered);
