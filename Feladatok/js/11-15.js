@@ -3,7 +3,7 @@
 // ! 11
 
 function advBubbleSortAsc(advBubbleArray) {
-  var i = advBubbleArray.length;
+  var i = advBubbleArray.length - 1;
   var change;
   while (i > 0) {
     change = 0;
@@ -25,7 +25,7 @@ console.log(advBubbleSortAsc([23, 52, 74, 1230, 85, 30, 42, 7, 89]));
 function advBubbleSortDesc(advBubbleArray) {
   var filteredArray = splitByType(advBubbleArray).filtered;
   var trashArray = splitByType(advBubbleArray).trash;
-  var i = filteredArray.length;
+  var i = filteredArray.length - 1;
   var change;
   while (i > 0) {
     change = 0;
