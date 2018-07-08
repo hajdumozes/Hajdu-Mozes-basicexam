@@ -97,6 +97,22 @@ function searchForLongestShip(userdatasLength) {
   var maxImage = max.image;
   return maxImage;
 }
+/*
+// todo A keresést nem tudtam hozzákapcsolni a paraméterekhez.
+function searchForModels(userInput) {
+  var userDatas; // todo Ez lenne hozzákapcsolva a tömbhöz.
+  var searched = document.querySelector('#search-button').value;
+  var found = false;
+  var i = 0;
+  while (i < userDatas.length && !found) {
+    if (userDatas[i].model.indexOf(searched) > -1) {
+      found = true;
+      alert('I found it');
+    }
+    i++;
+  }
+}
+*/
 
 function getData(url, callbackFunc) {
   var xhttp = new XMLHttpRequest();
