@@ -1,4 +1,6 @@
-function splitByType(userDatas) {
+var userDatas = [];
+
+function splitByType() {
   var filteredArray = [];
   var trashArray = [];
   for (var i = 0; i < userDatas.length; i++) {
@@ -14,7 +16,7 @@ function splitByType(userDatas) {
   };
 }
 
-function sortByPricesAsc(userDatas) {
+function sortByPricesAsc() {
   var filteredData = splitByType(userDatas).filtered;
   var unknowns = splitByType(userDatas).trash;
   var change;
@@ -97,22 +99,44 @@ function searchForLongestShip(userdatasLength) {
   var maxImage = max.image;
   return maxImage;
 }
-/*
-// todo A keresést nem tudtam hozzákapcsolni a paraméterekhez.
-function searchForModels(userInput) {
-  var userDatas; // todo Ez lenne hozzákapcsolva a tömbhöz.
-  var searched = document.querySelector('#search-button').value;
+
+function sortByModelNames() {
+  var userDatasByModel = userDatas.slice();
+  var change;
+  var i = userDatasByModel.length - 1;
+  while (i > 0) {
+    change = 0;
+    for (var j = 0; j < i; j++) {
+      if (userDatasByModel[j].model > userDatasByModel[j + 1].model) {
+        [userDatasByModel[j], userDatasByModel[j + 1]] = [userDatasByModel[j + 1], userDatasByModel[j]];
+        change = j;
+      }
+    }
+    i = change;
+  }
+  return userDatasByModel;
+}
+
+function searchForModels() {
+  var userDataModels = sortByModelNames();
+  // ? Kisbetűssé kell alakítani a keresett elemet, meg a potenciális találatot is.
+  var searched = (document.querySelector('#search-text').value).toLowerCase();
   var found = false;
   var i = 0;
-  while (i < userDatas.length && !found) {
-    if (userDatas[i].model.indexOf(searched) > -1) {
+  while (i < userDataModels.length && !found) {
+    if (userDataModels[i].model.toLowerCase().indexOf(searched) > -1) {
       found = true;
-      alert('I found it');
+      // ? Az első paraméter a bevitt objektum, a második az objektum módosítása, végül helykihagyás.
+      alert(JSON.stringify(userDataModels[i], null, 4));
     }
     i++;
   }
+  if (!found) {
+    var divSW = document.querySelector('.spaceship-list');
+    divSW.innerHTML += "<img src='../img/itsatrap.jpg' style='display:block; margin:0 auto'/>";
+    alert("It's a trap! There is no model like that!");
+  }
 }
-*/
 
 function getData(url, callbackFunc) {
   var xhttp = new XMLHttpRequest();
@@ -128,7 +152,7 @@ function getData(url, callbackFunc) {
 
 function successAjax(xhttp) {
   // Innen lesz elérhető a JSON file tartalma, tehát az adatok amikkel dolgoznod kell
-  var userDatas = JSON.parse(xhttp.responseText);
+  userDatas = JSON.parse(xhttp.responseText);
   // Innen lehet hívni.
   deleteConsumablesNullObjects(userDatas);
   replaceNullWithUnknown(userDatas);
