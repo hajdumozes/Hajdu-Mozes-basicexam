@@ -69,19 +69,20 @@ function insertPicturesAfterAlphabetN(modifiedDatasInput) {
 
 function intoHTMLSpaceShipList(modifiedDatasInput, DOM) {
   for (var i = 0; i < modifiedDatasInput.length; i++) {
-    DOM.innerHTML += `<div class="div-mozes" onclick="putToTheSideDiv(${modifiedDatasInput[i]})"> 
+    DOM.innerHTML += `<div class="div-mozes${i}" onclick="putToTheSideDiv(${modifiedDatasInput[i]})"> 
     <pre> ${JSON.stringify(modifiedDatasInput[i], null, 4)}
     <img src='../img/${modifiedDatasInput[i].image}' class="imageMozes" 
     alt='${modifiedDatasInput[i].model}'
     </pre> </div>`;
+    document.querySelector('.div-mozes' + i).addEventListener('click', putToTheSideDiv(modifiedDatasInput, i));
   }
 }
 
 // ! 5. feladat
-function putToTheSideDiv(index) {
+function putToTheSideDiv(modifiedDatasInput, index) {
   var sideDiv = document.querySelector('.one-spaceship');
   sideDiv.style.color = 'white';
-  sideDiv.innerHTML += JSON.stringify(index, null, 4);
+  sideDiv.innerHTML += `<pre>${JSON.stringify(modifiedDatasInput[index], null, 4)}</pre>`;
 }
 
 
