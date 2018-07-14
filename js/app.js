@@ -68,16 +68,38 @@ function insertPicturesAfterAlphabetN(modifiedDatasInput) {
 }
 
 function intoHTMLSpaceShipList(modifiedDatasInput, DOM) {
-  // spaceshipList.innerHTML += '<pre>';
   for (var i = 0; i < modifiedDatasInput.length; i++) {
-    DOM.innerHTML += `<div> <pre>${JSON.stringify(modifiedDatasInput[i], null, 4)}
+    DOM.innerHTML += `<div class="div-mozes" onclick="putToTheSideDiv(${modifiedDatasInput[i]})"> 
+    <pre> ${JSON.stringify(modifiedDatasInput[i], null, 4)}
     <img src='../img/${modifiedDatasInput[i].image}' class="imageMozes" 
-    alt='${modifiedDatasInput[i].model}' </pre> </div>`;
+    alt='${modifiedDatasInput[i].model}'
+    </pre> </div>`;
   }
-  // spaceshipList.innerHTML += '</pre>';
 }
 
 // ! 5. feladat
+function putToTheSideDiv(index) {
+  var sideDiv = document.querySelector('.one-spaceship');
+  sideDiv.style.color = 'white';
+  sideDiv.innerHTML += JSON.stringify(index, null, 4);
+}
+
+
+//
+/*
+function addEvents(modifiedDatas) {
+  var sideDiv = document.querySelector('.one-spaceship');
+  sideDiv.style.color = 'white';
+  var myDivs = document.querySelectorAll('.div-mozes');
+ for (var i = 0; i < myDivs.length; i++) {
+    /*myDivs[i].addEventListener('click', function () {
+      console.log(i);
+      // console.log(JSON.stringify(modifiedDatas[1], null, 4));
+      sideDiv.innerHTML = `<pre>${JSON.stringify(modifiedDatas[1], null, 4)}</pre>`;
+    });
+  }
+}
+*/
 /*
 function searchForCrew1(userDatasCrew) {
   var crew1 = [];
@@ -180,7 +202,8 @@ function successAjax(xhttp) {
   insertPicturesAfterAlphabetN(modifiedDatas);
   var spaceshipList = document.querySelector('.spaceship-list');
   intoHTMLSpaceShipList(modifiedDatas, spaceshipList);
-  // spaceshipList.innerHTML += `<pre> ${jsonModifiedDatas} </pre>`;
+  // addEvents(modifiedDatas);
+  // spaceshipList.innerHTML += `< pre > ${ jsonModifiedDatas } </pre > `;
   /*
   var crew1 = searchForCrew1(userDatas);
   var biggestCargo = searchForBiggestCargoCap(userDatas);
@@ -191,7 +214,7 @@ function successAjax(xhttp) {
   console.log(crew1);
   console.log('A legnagyobb rakományú hajó');
   console.log(biggestCargo);
-  console.log(`Az összes utas száma: ${allPassengers}`);
+  console.log(`Az összes utas száma: ${ allPassengers } `);
   console.log('A leghosszabb hajó képének neve');
   console.log(longestShipImage);
   */
