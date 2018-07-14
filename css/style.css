@@ -79,3 +79,9 @@ div{
     left: 20px;
   }
 }
+
+.imageMozes {
+  position: absolute;
+  right: 100px;
+  bottom: 80px;
+}

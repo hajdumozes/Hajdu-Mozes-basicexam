@@ -1,64 +1,84 @@
-var userDatas = [];
-
-function splitByType() {
-  var filteredArray = [];
+// ! 1. feladat
+// ? Számok és unknown értékek szétválasztása. Sajnos mindkettő string típus.
+function divideNumbersAndUnknowns(userDatas) {
+  var numberArray = [];
   var trashArray = [];
   for (var i = 0; i < userDatas.length; i++) {
     if (userDatas[i].cost_in_credits !== 'unknown') {
-      filteredArray.push(userDatas[i]);
+      numberArray.push(userDatas[i]);
     } else {
       trashArray.push(userDatas[i]);
     }
   }
   return {
-    filtered: filteredArray,
+    numbers: numberArray,
     trash: trashArray
   };
 }
-
-function sortByPricesAsc() {
-  var filteredData = splitByType(userDatas).filtered;
-  var unknowns = splitByType(userDatas).trash;
+function bubbleSortByPricesAscending(userDatasFiltered) {
+  var costNumbers = divideNumbersAndUnknowns(userDatasFiltered).numbers;
+  var unknowns = divideNumbersAndUnknowns(userDatasFiltered).trash;
   var change;
-  var i = filteredData.length - 1;
+  var i = costNumbers.length - 1;
   while (i > 0) {
     change = 0;
     for (var j = 0; j < i; j++) {
-      if (filteredData[j].cost_in_credits !== 'unknown') {
-        if (parseInt(filteredData[j].cost_in_credits, 10) > parseInt(filteredData[j + 1].cost_in_credits, 10)) {
-          [filteredData[j], filteredData[j + 1]] = [filteredData[j + 1], filteredData[j]];
-          change = j;
-        }
+      if (parseInt(costNumbers[j].cost_in_credits, 10) > // ? A Jason miatt még stringben vannak.
+        parseInt(costNumbers[j + 1].cost_in_credits, 10)) {
+        [costNumbers[j], costNumbers[j + 1]] = [costNumbers[j + 1], costNumbers[j]];
+        change = j;
       }
     }
     i = change;
   }
-  var mergedData = filteredData.concat(unknowns);
+  var mergedData = costNumbers.concat(unknowns);
   return mergedData;
 }
 
-function deleteConsumablesNullObjects(userDatasConsumable) {
-  var lastI = userDatasConsumable.length;
-  for (var i = 0; i < lastI; i++) {
-    if (userDatasConsumable[i].consumables === null) {
-      userDatasConsumable.splice(i, 1); // ? Törli az i indexű elemét a tömbnek
-      i--;
-      lastI--;
+// ! 2. feladat
+function deleteConsumablesNullObjects(userDatasInput) {
+  for (var i = 0; i < userDatasInput.length; i++) {
+    if (userDatasInput[i].consumables === null) {
+      userDatasInput.splice(i, 1); // ? Törli az i indexű elemét a tömbnek
+      i--; // ? A splice módosítja a tömb hosszát. Ezért egyet visszaugrunk
     }
   }
-  return userDatasConsumable;
+  return userDatasInput;
 }
 
-function replaceNullWithUnknown(userDatasReplace) {
-  for (var i = 0; i < userDatasReplace.length; i++) {
-    for (var k in userDatasReplace[i]) {
-      if (userDatasReplace[i][k] === null) {
-        userDatasReplace[i][k] = 'unknown';
+// ! 3. feladat
+function replaceNullsWithUnknown(userDatasInput) {
+  for (var i = 0; i < userDatasInput.length; i++) {
+    for (var k in userDatasInput[i]) {
+      if (userDatasInput[i][k] === null) {
+        userDatasInput[i][k] = 'unknown';
       }
     }
   }
 }
 
+// ! 4. feladat
+// ? Az n betű után már nincsenek képek, erre van ez a függvény
+function insertPicturesAfterAlphabetN(modifiedDatasInput) {
+  for (var i = 0; i < modifiedDatasInput.length; i++) {
+    if (modifiedDatasInput[i].image[0] > 'n') {
+      modifiedDatasInput[i].image = 'noship.jpg';
+    }
+  }
+}
+
+function intoHTMLSpaceShipList(modifiedDatasInput, DOM) {
+  // spaceshipList.innerHTML += '<pre>';
+  for (var i = 0; i < modifiedDatasInput.length; i++) {
+    DOM.innerHTML += `<div> <pre>${JSON.stringify(modifiedDatasInput[i], null, 4)}
+    <img src='../img/${modifiedDatasInput[i].image}' class="imageMozes" 
+    alt='${modifiedDatasInput[i].model}' </pre> </div>`;
+  }
+  // spaceshipList.innerHTML += '</pre>';
+}
+
+// ! 5. feladat
+/*
 function searchForCrew1(userDatasCrew) {
   var crew1 = [];
   for (var i = 0; i < userDatasCrew.length; i++) {
@@ -137,7 +157,7 @@ function searchForModels() {
     alert("It's a trap! There is no model like that!");
   }
 }
-
+*/
 function getData(url, callbackFunc) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
@@ -152,11 +172,16 @@ function getData(url, callbackFunc) {
 
 function successAjax(xhttp) {
   // Innen lesz elérhető a JSON file tartalma, tehát az adatok amikkel dolgoznod kell
-  userDatas = JSON.parse(xhttp.responseText);
+  var userDatas = JSON.parse(xhttp.responseText);
   // Innen lehet hívni.
   deleteConsumablesNullObjects(userDatas);
-  replaceNullWithUnknown(userDatas);
-  var modifiedDatas = sortByPricesAsc(userDatas);
+  replaceNullsWithUnknown(userDatas);
+  var modifiedDatas = bubbleSortByPricesAscending(userDatas);
+  insertPicturesAfterAlphabetN(modifiedDatas);
+  var spaceshipList = document.querySelector('.spaceship-list');
+  intoHTMLSpaceShipList(modifiedDatas, spaceshipList);
+  // spaceshipList.innerHTML += `<pre> ${jsonModifiedDatas} </pre>`;
+  /*
   var crew1 = searchForCrew1(userDatas);
   var biggestCargo = searchForBiggestCargoCap(userDatas);
   var allPassengers = sumAllPassengers(userDatas);
@@ -169,5 +194,6 @@ function successAjax(xhttp) {
   console.log(`Az összes utas száma: ${allPassengers}`);
   console.log('A leghosszabb hajó képének neve');
   console.log(longestShipImage);
+  */
 }
 getData('/json/spaceships.json', successAjax);
