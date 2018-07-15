@@ -79,7 +79,7 @@ function intoHTMLSpaceShipList(modifiedDatasInput, DOM) {
   }
 }
 
-// ! 5. feladat - nem született működő megoldás
+// ! 5. feladat
 
 
 function addEvents() {
