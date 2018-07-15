@@ -93,10 +93,11 @@ function addEvents() {
 function thisDivToTheSide(mouseEvent) {
   var sideDiv = document.querySelector('.one-spaceship');
   sideDiv.style.color = 'white';
-  console.log(mouseEvent.path[1]);
   var chosenDivContent = document.createElement('div');
   chosenDivContent.id = 'divToDelete';
   chosenDivContent.innerHTML = mouseEvent.path[1].innerHTML;
+  // ? div -> pre -> image
+  chosenDivContent.firstElementChild.firstElementChild.className = '';
   if (sideDiv.querySelector('#divToDelete')) {
     var divToDelete = sideDiv.querySelector('#divToDelete');
     sideDiv.removeChild(divToDelete);
