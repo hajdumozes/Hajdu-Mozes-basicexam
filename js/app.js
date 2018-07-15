@@ -15,6 +15,7 @@ function divideNumbersAndUnknowns(userDatas) {
     trash: trashArray
   };
 }
+
 function bubbleSortByPricesAscending(userDatasFiltered) {
   var costNumbers = divideNumbersAndUnknowns(userDatasFiltered).numbers;
   var unknowns = divideNumbersAndUnknowns(userDatasFiltered).trash;
@@ -78,23 +79,22 @@ function intoHTMLSpaceShipList(modifiedDatasInput, DOM) {
   }
 }
 
-// ! 5. feladat
+// ! 5. feladat - nem született működő megoldás
 
-//
-/*
-function addEvents(modifiedDatas) {
-  var sideDiv = document.querySelector('.one-spaceship');
-  sideDiv.style.color = 'white';
-  var myDivs = document.querySelectorAll('.div-mozes');
- for (var i = 0; i < myDivs.length; i++) {
-    /*myDivs[i].addEventListener('click', function () {
-      console.log(i);
-      // console.log(JSON.stringify(modifiedDatas[1], null, 4));
-      sideDiv.innerHTML = `<pre>${JSON.stringify(modifiedDatas[1], null, 4)}</pre>`;
-    });
-  }
-}
-*/
+
+// function addEvents(modifiedDatas) {
+//   var sideDiv = document.querySelector('.one-spaceship');
+//   sideDiv.style.color = 'white';
+//   var myDivs = document.querySelectorAll('.div-mozes');
+//   for (var i = 0; i < myDivs.length; i++) {
+//     myDivs[i].addEventListener('click', function () {
+//       console.log(i);
+//       // console.log(JSON.stringify(modifiedDatas[1], null, 4));
+//       sideDiv.innerHTML = `<pre>${JSON.stringify(modifiedDatas[i], null, 4)}</pre>`;
+//     });
+//   }
+// }
+
 
 // ! 6. feladat
 function searchForCrew1Ships(modifiedDatasInput, DOM) {
@@ -207,7 +207,7 @@ function putToTheSideDivNotFound() {
   }
   var myDiv = document.createElement('div');
   myDiv.id = 'divToDelete';
-  myDiv.innerHTML = '<img src=\'../img/noship.jpg\' style=\'display:block; margin:0 auto\'/>';
+  myDiv.innerHTML = '<img src=\'../img/notFound.png\' style=\'display:block; margin:0 auto\'/>';
   sideDiv.appendChild(myDiv);
 }
 
@@ -234,7 +234,6 @@ function successAjax(xhttp) {
   var spaceshipList = document.querySelector('.spaceship-list');
   intoHTMLSpaceShipList(modifiedDatas, spaceshipList);
   // addEvents(modifiedDatas);
-  // spaceshipList.innerHTML += `< pre > ${ jsonModifiedDatas } </pre > `;
   searchForCrew1Ships(modifiedDatas, spaceshipList);
   searchForBiggestCargoCapacity(modifiedDatas, spaceshipList);
   sumAllPassengers(modifiedDatas, spaceshipList);
