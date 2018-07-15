@@ -70,7 +70,7 @@ function insertPicturesAfterAlphabetN(modifiedDatasInput) {
 
 function intoHTMLSpaceShipList(modifiedDatasInput, DOM) {
   for (var i = 0; i < modifiedDatasInput.length; i++) {
-    DOM.innerHTML += `<div class="div-mozes${i}" onclick="putToTheSideDiv(${modifiedDatasInput[i]})"> 
+    DOM.innerHTML += `<div class="div-mozes${i} div-task6"> 
     <pre> ${JSON.stringify(modifiedDatasInput[i], null, 4)}
     <img src='../img/${modifiedDatasInput[i].image}' class="imageMozes" 
     alt='${modifiedDatasInput[i].model}'
@@ -82,18 +82,27 @@ function intoHTMLSpaceShipList(modifiedDatasInput, DOM) {
 // ! 5. feladat - nem született működő megoldás
 
 
-// function addEvents(modifiedDatas) {
-//   var sideDiv = document.querySelector('.one-spaceship');
-//   sideDiv.style.color = 'white';
-//   var myDivs = document.querySelectorAll('.div-mozes');
-//   for (var i = 0; i < myDivs.length; i++) {
-//     myDivs[i].addEventListener('click', function () {
-//       console.log(i);
-//       // console.log(JSON.stringify(modifiedDatas[1], null, 4));
-//       sideDiv.innerHTML = `<pre>${JSON.stringify(modifiedDatas[i], null, 4)}</pre>`;
-//     });
-//   }
-// }
+function addEvents() {
+  var myDivs = document.querySelectorAll('.div-task6');
+  for (var i = 0; i < myDivs.length; i++) {
+    myDivs[i].addEventListener('click', thisDivToTheSide);
+  }
+}
+
+// ? Az elnevezések és a feltételek a "putToTheSideDiv" függvény miatt vannak (7.feladat)
+function thisDivToTheSide(mouseEvent) {
+  var sideDiv = document.querySelector('.one-spaceship');
+  sideDiv.style.color = 'white';
+  console.log(mouseEvent.path[1]);
+  var chosenDivContent = document.createElement('div');
+  chosenDivContent.id = 'divToDelete';
+  chosenDivContent.innerHTML = mouseEvent.path[1].innerHTML;
+  if (sideDiv.querySelector('#divToDelete')) {
+    var divToDelete = sideDiv.querySelector('#divToDelete');
+    sideDiv.removeChild(divToDelete);
+  }
+  sideDiv.appendChild(chosenDivContent);
+}
 
 
 // ! 6. feladat
@@ -170,7 +179,6 @@ function searchForModels(modifiedDatasInput) {
     while (i < userDataModels.length && !found) {
       if (userDataModels[i].model.toLowerCase().indexOf(searched) > -1) {
         found = true;
-        // ? Az első paraméter a bevitt objektum, a második az objektum módosítása, végül helykihagyás.
         putToTheSideDiv(userDataModels[i]);
       }
       i++;
@@ -233,11 +241,11 @@ function successAjax(xhttp) {
   insertPicturesAfterAlphabetN(modifiedDatas);
   var spaceshipList = document.querySelector('.spaceship-list');
   intoHTMLSpaceShipList(modifiedDatas, spaceshipList);
-  // addEvents(modifiedDatas);
   searchForCrew1Ships(modifiedDatas, spaceshipList);
   searchForBiggestCargoCapacity(modifiedDatas, spaceshipList);
   sumAllPassengers(modifiedDatas, spaceshipList);
   searchForLongestShipImageName(modifiedDatas, spaceshipList);
   searchForModels(modifiedDatas);
+  addEvents();
 }
 getData('/json/spaceships.json', successAjax);
