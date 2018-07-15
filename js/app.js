@@ -74,7 +74,7 @@ function intoHTMLSpaceShipList(modifiedDatasInput, DOM) {
     <img src='../img/${modifiedDatasInput[i].image}' class="imageMozes" 
     alt='${modifiedDatasInput[i].model}'
     </pre> </div>`;
-    document.querySelector('.div-mozes' + i).addEventListener('click', putToTheSideDiv(modifiedDatasInput, i));
+    document.querySelector('.div-mozes' + i).addEventListener('onclick', putToTheSideDiv(modifiedDatasInput, i));
   }
 }
 
@@ -82,7 +82,7 @@ function intoHTMLSpaceShipList(modifiedDatasInput, DOM) {
 function putToTheSideDiv(modifiedDatasInput, index) {
   var sideDiv = document.querySelector('.one-spaceship');
   sideDiv.style.color = 'white';
-  sideDiv.innerHTML += `<pre>${JSON.stringify(modifiedDatasInput[index], null, 4)}</pre>`;
+  sideDiv.innerHTML = `<pre>${JSON.stringify(modifiedDatasInput[index], null, 4)}</pre>`;
 }
 
 
@@ -101,48 +101,53 @@ function addEvents(modifiedDatas) {
   }
 }
 */
-/*
-function searchForCrew1(userDatasCrew) {
-  var crew1 = [];
-  for (var i = 0; i < userDatasCrew.length; i++) {
-    if (userDatasCrew[i].crew === '1') {
-      crew1.push(userDatasCrew[i]);
+
+// ! 6. feladat
+function searchForCrew1Ships(modifiedDatasInput, DOM) {
+  var crew1 = 0;
+  for (var i = 0; i < modifiedDatasInput.length; i++) {
+    if (modifiedDatasInput[i].crew === '1') {
+      crew1++;
     }
   }
-  return crew1;
+  DOM.innerHTML += `<pre><strong><font size="4" face="verdana">Ships with crew of 1:  ${crew1}
+  </font></strong></pre>`;
 }
 
-function searchForBiggestCargoCap(userdatasCargo) {
-  var max = userdatasCargo[0];
-  for (var i = 0; i < userdatasCargo.length; i++) {
-    if (parseInt(userdatasCargo[i].cargo_capacity, 10) > parseInt(max.cargo_capacity, 10)) {
-      max = userdatasCargo[i];
+function searchForBiggestCargoCapacity(modifiedDatasInput, DOM) {
+  var max = modifiedDatasInput[0];
+  for (var i = 0; i < modifiedDatasInput.length; i++) {
+    if (parseInt(modifiedDatasInput[i].cargo_capacity, 10) > parseInt(max.cargo_capacity, 10)) {
+      max = modifiedDatasInput[i];
     }
   }
-  return max;
+  DOM.innerHTML += `<pre><strong><font size="4" face="verdana">Model with the biggest cargo:  ${max.model}
+  </font></strong></pre>`;
 }
 
-function sumAllPassengers(userdatasPassengers) {
+function sumAllPassengers(modifiedDatasInput, DOM) {
   var passengersSum = 0;
-  for (var i = 0; i < userdatasPassengers.length; i++) {
-    if (userdatasPassengers[i].passengers !== 'unknown') {
-      passengersSum += parseInt(userdatasPassengers[i].passengers, 10);
+  for (var i = 0; i < modifiedDatasInput.length; i++) {
+    if (modifiedDatasInput[i].passengers !== 'unknown') {
+      passengersSum += parseInt(modifiedDatasInput[i].passengers, 10);
     }
   }
-  return passengersSum;
+  DOM.innerHTML += `<pre><strong><font size="4" face="verdana">All passengers:  ${passengersSum}
+  </font></strong></pre>`;
 }
 
-function searchForLongestShip(userdatasLength) {
-  var max = userdatasLength[0];
-  for (var i = 0; i < userdatasLength.length; i++) {
-    if (parseInt(userdatasLength[i].lengthiness, 10) > parseInt(max.lengthiness, 10)) {
-      max = userdatasLength[i];
+function searchForLongestShipImageName(modifiedDatasInput, DOM) {
+  var max = modifiedDatasInput[0];
+  for (var i = 0; i < modifiedDatasInput.length; i++) {
+    if (parseInt(modifiedDatasInput[i].lengthiness, 10) > parseInt(max.lengthiness, 10)) {
+      max = modifiedDatasInput[i];
     }
   }
   var maxImage = max.image;
-  return maxImage;
+  DOM.innerHTML += `<pre><strong><font size="4" face="verdana">Image name of the longest ship:  ${maxImage}
+  </font></strong></pre>`;
 }
-
+/*
 function sortByModelNames() {
   var userDatasByModel = userDatas.slice();
   var change;
@@ -205,19 +210,9 @@ function successAjax(xhttp) {
   intoHTMLSpaceShipList(modifiedDatas, spaceshipList);
   // addEvents(modifiedDatas);
   // spaceshipList.innerHTML += `< pre > ${ jsonModifiedDatas } </pre > `;
-  /*
-  var crew1 = searchForCrew1(userDatas);
-  var biggestCargo = searchForBiggestCargoCap(userDatas);
-  var allPassengers = sumAllPassengers(userDatas);
-  var longestShipImage = searchForLongestShip(userDatas);
-  console.log(modifiedDatas);
-  console.log('1 fős legénységgel rendelkező hajók száma:');
-  console.log(crew1);
-  console.log('A legnagyobb rakományú hajó');
-  console.log(biggestCargo);
-  console.log(`Az összes utas száma: ${ allPassengers } `);
-  console.log('A leghosszabb hajó képének neve');
-  console.log(longestShipImage);
-  */
+  searchForCrew1Ships(userDatas, spaceshipList);
+  searchForBiggestCargoCapacity(userDatas, spaceshipList);
+  sumAllPassengers(userDatas, spaceshipList);
+  searchForLongestShipImageName(userDatas, spaceshipList);
 }
 getData('/json/spaceships.json', successAjax);
