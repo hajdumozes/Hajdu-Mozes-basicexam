@@ -74,17 +74,11 @@ function intoHTMLSpaceShipList(modifiedDatasInput, DOM) {
     <img src='../img/${modifiedDatasInput[i].image}' class="imageMozes" 
     alt='${modifiedDatasInput[i].model}'
     </pre> </div>`;
-    document.querySelector('.div-mozes' + i).addEventListener('onclick', putToTheSideDiv(modifiedDatasInput, i));
+    // document.querySelector('.div-mozes' + i).addEventListener('onclick', putToTheSideDiv(modifiedDatasInput, i));
   }
 }
 
 // ! 5. feladat
-function putToTheSideDiv(modifiedDatasInput, index) {
-  var sideDiv = document.querySelector('.one-spaceship');
-  sideDiv.style.color = 'white';
-  sideDiv.innerHTML = `<pre>${JSON.stringify(modifiedDatasInput[index], null, 4)}</pre>`;
-}
-
 
 //
 /*
@@ -147,9 +141,10 @@ function searchForLongestShipImageName(modifiedDatasInput, DOM) {
   DOM.innerHTML += `<pre><strong><font size="4" face="verdana">Image name of the longest ship:  ${maxImage}
   </font></strong></pre>`;
 }
-/*
-function sortByModelNames() {
-  var userDatasByModel = userDatas.slice();
+
+// ! 7. feladat
+function sortByModelNames(modifiedDatasInput) {
+  var userDatasByModel = modifiedDatasInput.slice();
   var change;
   var i = userDatasByModel.length - 1;
   while (i > 0) {
@@ -165,27 +160,57 @@ function sortByModelNames() {
   return userDatasByModel;
 }
 
-function searchForModels() {
-  var userDataModels = sortByModelNames();
-  // ? Kisbetűssé kell alakítani a keresett elemet, meg a potenciális találatot is.
-  var searched = (document.querySelector('#search-text').value).toLowerCase();
-  var found = false;
-  var i = 0;
-  while (i < userDataModels.length && !found) {
-    if (userDataModels[i].model.toLowerCase().indexOf(searched) > -1) {
-      found = true;
-      // ? Az első paraméter a bevitt objektum, a második az objektum módosítása, végül helykihagyás.
-      alert(JSON.stringify(userDataModels[i], null, 4));
+function searchForModels(modifiedDatasInput) {
+  var userDataModels = sortByModelNames(modifiedDatasInput);
+  document.querySelector('#search-button').addEventListener('click', function event() {
+    // ? Kisbetűssé kell alakítani a keresett elemet, meg a potenciális találatot is.
+    var searched = (document.querySelector('#search-text').value).toLowerCase();
+    var found = false;
+    var i = 0;
+    while (i < userDataModels.length && !found) {
+      if (userDataModels[i].model.toLowerCase().indexOf(searched) > -1) {
+        found = true;
+        // ? Az első paraméter a bevitt objektum, a második az objektum módosítása, végül helykihagyás.
+        putToTheSideDiv(userDataModels[i]);
+      }
+      i++;
     }
-    i++;
-  }
-  if (!found) {
-    var divSW = document.querySelector('.spaceship-list');
-    divSW.innerHTML += "<img src='../img/itsatrap.jpg' style='display:block; margin:0 auto'/>";
-    alert("It's a trap! There is no model like that!");
-  }
+    if (!found) {
+      putToTheSideDivNotFound();
+    }
+  });
 }
-*/
+
+function putToTheSideDiv(modifiedDatasInput) {
+  // ? Probléma 1 : az innerHTML "(+)=" dolog nem szerencsés, nem szabad baszkurálni a gombot.
+  var sideDiv = document.querySelector('.one-spaceship');
+  // ? Probléma 2: Ha nem törlöm az előző tag-et, akkor egymás után pakolja.
+  if (sideDiv.querySelector('#divToDelete')) {
+    var divToDelete = sideDiv.querySelector('#divToDelete');
+    sideDiv.removeChild(divToDelete);
+  }
+  // ? Probléma 3: Fekete hátteren pont nem látszik semmi.
+  sideDiv.style.color = 'white';
+  var myDiv = document.createElement('div');
+  // ? Probléma 4: A két function-nek szinkronban kell lenniük, ezért a div és az if ugyanaz.
+  myDiv.id = 'divToDelete';
+  myDiv.innerHTML = `<pre>${JSON.stringify(modifiedDatasInput, null, 1)}
+  <img src='../img/${modifiedDatasInput.image}' alt='${modifiedDatasInput.model}'</pre>`;
+  sideDiv.appendChild(myDiv);
+}
+
+function putToTheSideDivNotFound() {
+  var sideDiv = document.querySelector('.one-spaceship');
+  if (sideDiv.querySelector('#divToDelete')) {
+    var divToDelete = sideDiv.querySelector('#divToDelete');
+    sideDiv.removeChild(divToDelete);
+  }
+  var myDiv = document.createElement('div');
+  myDiv.id = 'divToDelete';
+  myDiv.innerHTML = '<img src=\'../img/noship.jpg\' style=\'display:block; margin:0 auto\'/>';
+  sideDiv.appendChild(myDiv);
+}
+
 function getData(url, callbackFunc) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
@@ -210,9 +235,10 @@ function successAjax(xhttp) {
   intoHTMLSpaceShipList(modifiedDatas, spaceshipList);
   // addEvents(modifiedDatas);
   // spaceshipList.innerHTML += `< pre > ${ jsonModifiedDatas } </pre > `;
-  searchForCrew1Ships(userDatas, spaceshipList);
-  searchForBiggestCargoCapacity(userDatas, spaceshipList);
-  sumAllPassengers(userDatas, spaceshipList);
-  searchForLongestShipImageName(userDatas, spaceshipList);
+  searchForCrew1Ships(modifiedDatas, spaceshipList);
+  searchForBiggestCargoCapacity(modifiedDatas, spaceshipList);
+  sumAllPassengers(modifiedDatas, spaceshipList);
+  searchForLongestShipImageName(modifiedDatas, spaceshipList);
+  searchForModels(modifiedDatas);
 }
 getData('/json/spaceships.json', successAjax);
