@@ -1,5 +1,4 @@
 // ! 1. feladat
-// ? Számok és unknown értékek szétválasztása. Sajnos mindkettő string típus.
 function divideNumbersAndUnknowns(userDatas) {
   var numberArray = [];
   var trashArray = [];
@@ -18,7 +17,6 @@ function divideNumbersAndUnknowns(userDatas) {
 
 function bubbleSortByPricesAscending(userDatasFiltered) {
   var costNumbers = divideNumbersAndUnknowns(userDatasFiltered).numbers;
-  var unknowns = divideNumbersAndUnknowns(userDatasFiltered).trash;
   var change;
   var i = costNumbers.length - 1;
   while (i > 0) {
@@ -32,7 +30,13 @@ function bubbleSortByPricesAscending(userDatasFiltered) {
     }
     i = change;
   }
-  var mergedData = costNumbers.concat(unknowns);
+  return costNumbers;
+}
+
+function mergeUnknowsWithSortedNumbers(userDatasFiltered) {
+  var unknowns = divideNumbersAndUnknowns(userDatasFiltered).trash;
+  var sortedNumbers = bubbleSortByPricesAscending(userDatasFiltered);
+  var mergedData = sortedNumbers.concat(unknowns);
   return mergedData;
 }
 
@@ -40,8 +44,8 @@ function bubbleSortByPricesAscending(userDatasFiltered) {
 function deleteConsumablesNullObjects(userDatasInput) {
   for (var i = 0; i < userDatasInput.length; i++) {
     if (userDatasInput[i].consumables === null) {
-      userDatasInput.splice(i, 1); // ? Törli az i indexű elemét a tömbnek
-      i--; // ? A splice módosítja a tömb hosszát. Ezért egyet visszaugrunk
+      userDatasInput.splice(i, 1); // ? Törli az i indexű elemét a tömbnek.
+      i--; // ? A splice módosítja a tömb hosszát. Ezért egyet visszaugrunk.
     }
   }
   return userDatasInput;
@@ -68,22 +72,35 @@ function insertPicturesAfterAlphabetN(modifiedDatasInput) {
   }
 }
 
-function intoHTMLSpaceShipList(modifiedDatasInput, DOM) {
+function createContentToHTML(modifiedDatasInput, SelectedDiv) {
+  var content = '';
   for (var i = 0; i < modifiedDatasInput.length; i++) {
-    DOM.innerHTML += `<div class="div-mozes${i} div-task6"> 
-    <pre> ${JSON.stringify(modifiedDatasInput[i], null, 4)}
-    <img src='../img/${modifiedDatasInput[i].image}' class="imageMozes" 
-    alt='${modifiedDatasInput[i].model}'
-    </pre> </div>`;
-    // document.querySelector('.div-mozes' + i).addEventListener('onclick', putToTheSideDiv(modifiedDatasInput, i));
+    var tempDiv = createTempDiv(i);
+    for (var k in modifiedDatasInput[i]) {
+      if (modifiedDatasInput[i].hasOwnProperty(k)) {
+        content += `${k} : ${modifiedDatasInput[i][k]} <br>`;
+      }
+    }
+    content += `<img src='../img/${modifiedDatasInput[i].image}' class="imageMozes"
+    alt='${modifiedDatasInput[i].model}'>`;
+    tempDiv.innerHTML = content;
+    SelectedDiv.appendChild(tempDiv);
+    content = '';
   }
+}
+
+function createTempDiv(i) {
+  var tempDiv = document.createElement('div');
+  tempDiv.className = `div-mozes${i}`;
+  tempDiv.classList.add('div-task4');
+  return tempDiv;
 }
 
 // ! 5. feladat
 
 
 function addEvents() {
-  var myDivs = document.querySelectorAll('.div-task6');
+  var myDivs = document.querySelectorAll('.div-task4');
   for (var i = 0; i < myDivs.length; i++) {
     myDivs[i].addEventListener('click', thisDivToTheSide);
   }
@@ -95,14 +112,19 @@ function thisDivToTheSide(mouseEvent) {
   sideDiv.style.color = 'white';
   var chosenDivContent = document.createElement('div');
   chosenDivContent.id = 'divToDelete';
-  chosenDivContent.innerHTML = mouseEvent.path[1].innerHTML;
-  // ? div -> pre -> image
-  chosenDivContent.firstElementChild.firstElementChild.className = '';
+  chosenDivContent.innerHTML = mouseEvent.path[0].innerHTML;
+  chosenDivContent.innerHTML =
+    chosenDivContent.innerHTML.replace('imageMozes', ''); // ? class csere
+  deletePreviousDivFromTheSide();
+  sideDiv.appendChild(chosenDivContent);
+}
+
+function deletePreviousDivFromTheSide() {
+  var sideDiv = document.querySelector('.one-spaceship');
   if (sideDiv.querySelector('#divToDelete')) {
     var divToDelete = sideDiv.querySelector('#divToDelete');
     sideDiv.removeChild(divToDelete);
   }
-  sideDiv.appendChild(chosenDivContent);
 }
 
 
@@ -114,8 +136,8 @@ function searchForCrew1Ships(modifiedDatasInput, DOM) {
       crew1++;
     }
   }
-  DOM.innerHTML += `<pre><strong><font size="4" face="verdana">Ships with crew of 1:  ${crew1}
-  </font></strong></pre>`;
+  DOM.innerHTML += `< pre > <strong><font size="4" face="verdana">Ships with crew of 1:  ${crew1}
+          </font></strong></pre > `;
 }
 
 function searchForBiggestCargoCapacity(modifiedDatasInput, DOM) {
@@ -125,8 +147,8 @@ function searchForBiggestCargoCapacity(modifiedDatasInput, DOM) {
       max = modifiedDatasInput[i];
     }
   }
-  DOM.innerHTML += `<pre><strong><font size="4" face="verdana">Model with the biggest cargo:  ${max.model}
-  </font></strong></pre>`;
+  DOM.innerHTML += `< pre > <strong><font size="4" face="verdana">Model with the biggest cargo:  ${max.model}
+            </font></strong></pre > `;
 }
 
 function sumAllPassengers(modifiedDatasInput, DOM) {
@@ -136,8 +158,8 @@ function sumAllPassengers(modifiedDatasInput, DOM) {
       passengersSum += parseInt(modifiedDatasInput[i].passengers, 10);
     }
   }
-  DOM.innerHTML += `<pre><strong><font size="4" face="verdana">All passengers:  ${passengersSum}
-  </font></strong></pre>`;
+  DOM.innerHTML += `< pre > <strong><font size="4" face="verdana">All passengers:  ${passengersSum}
+              </font></strong></pre > `;
 }
 
 function searchForLongestShipImageName(modifiedDatasInput, DOM) {
@@ -148,8 +170,8 @@ function searchForLongestShipImageName(modifiedDatasInput, DOM) {
     }
   }
   var maxImage = max.image;
-  DOM.innerHTML += `<pre><strong><font size="4" face="verdana">Image name of the longest ship:  ${maxImage}
-  </font></strong></pre>`;
+  DOM.innerHTML += `< pre > <strong><font size="4" face="verdana">Image name of the longest ship:  ${maxImage}
+                </font></strong></pre > `;
 }
 
 // ! 7. feladat
@@ -203,8 +225,8 @@ function putToTheSideDiv(modifiedDatasInput) {
   var myDiv = document.createElement('div');
   // ? Probléma 4: A két function-nek szinkronban kell lenniük, ezért a div és az if ugyanaz.
   myDiv.id = 'divToDelete';
-  myDiv.innerHTML = `<pre>${JSON.stringify(modifiedDatasInput, null, 1)}
-  <img src='../img/${modifiedDatasInput.image}' alt='${modifiedDatasInput.model}'</pre>`;
+  myDiv.innerHTML = `< pre > ${JSON.stringify(modifiedDatasInput, null, 1)}
+        <img src='../img/${modifiedDatasInput.image}' alt='${modifiedDatasInput.model}'</ pre>`;
   sideDiv.appendChild(myDiv);
 }
 
@@ -222,7 +244,7 @@ function putToTheSideDivNotFound() {
 
 function getData(url, callbackFunc) {
   var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function () {
+  xhttp.onreadystatechange = function onReadyStateChange() {
     // ? ide belenyúltam az ESLINT miatt, 2 == helyett 3 === lett.
     if (this.readyState === 4 && this.status === 200) {
       callbackFunc(this);
@@ -238,10 +260,11 @@ function successAjax(xhttp) {
   // Innen lehet hívni.
   deleteConsumablesNullObjects(userDatas);
   replaceNullsWithUnknown(userDatas);
-  var modifiedDatas = bubbleSortByPricesAscending(userDatas);
+  var modifiedDatas = mergeUnknowsWithSortedNumbers(userDatas);
   insertPicturesAfterAlphabetN(modifiedDatas);
   var spaceshipList = document.querySelector('.spaceship-list');
-  intoHTMLSpaceShipList(modifiedDatas, spaceshipList);
+  // intoHTMLSpaceShipList(modifiedDatas, spaceshipList);
+  createContentToHTML(modifiedDatas, spaceshipList);
   searchForCrew1Ships(modifiedDatas, spaceshipList);
   searchForBiggestCargoCapacity(modifiedDatas, spaceshipList);
   sumAllPassengers(modifiedDatas, spaceshipList);
