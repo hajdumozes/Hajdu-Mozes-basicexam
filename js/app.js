@@ -108,15 +108,24 @@ function addEvents() {
 
 // ? Az elnevezések és a feltételek a "putToTheSideDiv" függvény miatt vannak (7.feladat)
 function thisDivToTheSide(mouseEvent) {
+  var divToTheSide = createEmptyDivToTheSide().divToTheSide;
+  var sideDiv = createEmptyDivToTheSide().sideDiv;
+  divToTheSide.innerHTML = mouseEvent.path[0].innerHTML;
+  divToTheSide.innerHTML =
+    divToTheSide.innerHTML.replace('imageMozes', ''); // ? class csere
+  deletePreviousDivFromTheSide();
+  sideDiv.appendChild(divToTheSide);
+}
+
+function createEmptyDivToTheSide() {
   var sideDiv = document.querySelector('.one-spaceship');
   sideDiv.style.color = 'white';
-  var chosenDivContent = document.createElement('div');
-  chosenDivContent.id = 'divToDelete';
-  chosenDivContent.innerHTML = mouseEvent.path[0].innerHTML;
-  chosenDivContent.innerHTML =
-    chosenDivContent.innerHTML.replace('imageMozes', ''); // ? class csere
-  deletePreviousDivFromTheSide();
-  sideDiv.appendChild(chosenDivContent);
+  var divToTheSide = document.createElement('div');
+  divToTheSide.id = 'divToDelete';
+  return {
+    divToTheSide: divToTheSide,
+    sideDiv: sideDiv
+  };
 }
 
 function deletePreviousDivFromTheSide() {
@@ -127,42 +136,47 @@ function deletePreviousDivFromTheSide() {
   }
 }
 
-
 // ! 6. feladat
-function searchForCrew1Ships(modifiedDatasInput, DOM) {
+function searchForCrew1Ships(modifiedDatasInput, SelectedDiv) {
   var crew1 = 0;
   for (var i = 0; i < modifiedDatasInput.length; i++) {
     if (modifiedDatasInput[i].crew === '1') {
       crew1++;
     }
   }
-  DOM.innerHTML += `< pre > <strong><font size="4" face="verdana">Ships with crew of 1:  ${crew1}
-          </font></strong></pre > `;
+  var Crew1ShipsDiv = createEmptyDivToTheSide().divToTheSide;
+  Crew1ShipsDiv.className = 'ships-stats';
+  Crew1ShipsDiv.innerHTML = `Ships with crew of 1:  ${crew1}`;
+  SelectedDiv.appendChild(Crew1ShipsDiv);
 }
 
-function searchForBiggestCargoCapacity(modifiedDatasInput, DOM) {
+function searchForBiggestCargoCapacity(modifiedDatasInput, SelectedDiv) {
   var max = modifiedDatasInput[0];
   for (var i = 0; i < modifiedDatasInput.length; i++) {
     if (parseInt(modifiedDatasInput[i].cargo_capacity, 10) > parseInt(max.cargo_capacity, 10)) {
       max = modifiedDatasInput[i];
     }
   }
-  DOM.innerHTML += `< pre > <strong><font size="4" face="verdana">Model with the biggest cargo:  ${max.model}
-            </font></strong></pre > `;
+  var BiggestCargoShipDiv = createEmptyDivToTheSide().divToTheSide;
+  BiggestCargoShipDiv.className = 'ships-stats';
+  BiggestCargoShipDiv.innerHTML = `Model with the biggest cargo:  ${max.model}`;
+  SelectedDiv.appendChild(BiggestCargoShipDiv);
 }
 
-function sumAllPassengers(modifiedDatasInput, DOM) {
+function sumAllPassengers(modifiedDatasInput, SelectedDiv) {
   var passengersSum = 0;
   for (var i = 0; i < modifiedDatasInput.length; i++) {
     if (modifiedDatasInput[i].passengers !== 'unknown') {
       passengersSum += parseInt(modifiedDatasInput[i].passengers, 10);
     }
   }
-  DOM.innerHTML += `< pre > <strong><font size="4" face="verdana">All passengers:  ${passengersSum}
-              </font></strong></pre > `;
+  var allPassengersDiv = createEmptyDivToTheSide().divToTheSide;
+  allPassengersDiv.className = 'ships-stats';
+  allPassengersDiv.innerHTML = `All passengers:  ${passengersSum}`;
+  SelectedDiv.appendChild(allPassengersDiv);
 }
 
-function searchForLongestShipImageName(modifiedDatasInput, DOM) {
+function searchForLongestShipImageName(modifiedDatasInput, SelectedDiv) {
   var max = modifiedDatasInput[0];
   for (var i = 0; i < modifiedDatasInput.length; i++) {
     if (parseInt(modifiedDatasInput[i].lengthiness, 10) > parseInt(max.lengthiness, 10)) {
@@ -170,8 +184,10 @@ function searchForLongestShipImageName(modifiedDatasInput, DOM) {
     }
   }
   var maxImage = max.image;
-  DOM.innerHTML += `< pre > <strong><font size="4" face="verdana">Image name of the longest ship:  ${maxImage}
-                </font></strong></pre > `;
+  var maxImageDiv = createEmptyDivToTheSide().divToTheSide;
+  maxImageDiv.className = 'ships-stats';
+  maxImageDiv.innerHTML = `Image name of the longest ship:  ${maxImage}`;
+  SelectedDiv.appendChild(maxImageDiv);
 }
 
 // ! 7. feladat
@@ -192,52 +208,51 @@ function sortByModelNames(modifiedDatasInput) {
   return userDatasByModel;
 }
 
-function searchForModels(modifiedDatasInput) {
+function createSearchEvent(modifiedDatasInput) {
   var userDataModels = sortByModelNames(modifiedDatasInput);
   document.querySelector('#search-button').addEventListener('click', function event() {
-    // ? Kisbetűssé kell alakítani a keresett elemet, meg a potenciális találatot is.
-    var searched = (document.querySelector('#search-text').value).toLowerCase();
-    var found = false;
-    var i = 0;
-    while (i < userDataModels.length && !found) {
-      if (userDataModels[i].model.toLowerCase().indexOf(searched) > -1) {
-        found = true;
-        putToTheSideDiv(userDataModels[i]);
-      }
-      i++;
-    }
-    if (!found) {
-      putToTheSideDivNotFound();
-    }
+    searchForModels(userDataModels);
   });
 }
 
-function putToTheSideDiv(modifiedDatasInput) {
-  // ? Probléma 1 : az innerHTML "(+)=" dolog nem szerencsés, nem szabad baszkurálni a gombot.
-  var sideDiv = document.querySelector('.one-spaceship');
-  // ? Probléma 2: Ha nem törlöm az előző tag-et, akkor egymás után pakolja.
-  if (sideDiv.querySelector('#divToDelete')) {
-    var divToDelete = sideDiv.querySelector('#divToDelete');
-    sideDiv.removeChild(divToDelete);
+function searchForModels(userDataModels) {
+  var searched = (document.querySelector('#search-text').value).toLowerCase();
+  var found = false;
+  var i = 0;
+  while (i < userDataModels.length && !found) {
+    if (userDataModels[i].model.toLowerCase().indexOf(searched) > -1) {
+      found = true;
+      putToTheSideDivFound(userDataModels[i]);
+    }
+    i++;
   }
-  // ? Probléma 3: Fekete hátteren pont nem látszik semmi.
-  sideDiv.style.color = 'white';
-  var myDiv = document.createElement('div');
-  // ? Probléma 4: A két function-nek szinkronban kell lenniük, ezért a div és az if ugyanaz.
-  myDiv.id = 'divToDelete';
-  myDiv.innerHTML = `< pre > ${JSON.stringify(modifiedDatasInput, null, 1)}
-        <img src='../img/${modifiedDatasInput.image}' alt='${modifiedDatasInput.model}'</ pre>`;
+  if (!found) {
+    putToTheSideDivNotFound();
+  }
+}
+
+function putToTheSideDivFound(modifiedDatasInput) {
+  deletePreviousDivFromTheSide();
+  var myDiv = createEmptyDivToTheSide().divToTheSide;
+  var sideDiv = createEmptyDivToTheSide().sideDiv;
+  var content = '';
+  for (const k in modifiedDatasInput) {
+    if (modifiedDatasInput.hasOwnProperty(k)) {
+      content += `${k}: ${modifiedDatasInput[k]} <br>`;
+    }
+  }
+  content += ` <img src='../img/${modifiedDatasInput.image}' alt='${modifiedDatasInput.model}>`;
+  myDiv.innerHTML = content;
+  // ! Közvetlen sem rakja bele
+  // myDiv.innerHTML = `<img src='../img/${modifiedDatasInput.image}' alt='${modifiedDatasInput.model}>`;
+  console.log(content); // ! A content változóban viszont ott díszeleg.
   sideDiv.appendChild(myDiv);
 }
 
 function putToTheSideDivNotFound() {
-  var sideDiv = document.querySelector('.one-spaceship');
-  if (sideDiv.querySelector('#divToDelete')) {
-    var divToDelete = sideDiv.querySelector('#divToDelete');
-    sideDiv.removeChild(divToDelete);
-  }
-  var myDiv = document.createElement('div');
-  myDiv.id = 'divToDelete';
+  deletePreviousDivFromTheSide();
+  var myDiv = createEmptyDivToTheSide().divToTheSide;
+  var sideDiv = createEmptyDivToTheSide().sideDiv;
   myDiv.innerHTML = '<img src=\'../img/notFound.png\' style=\'display:block; margin:0 auto\'/>';
   sideDiv.appendChild(myDiv);
 }
@@ -263,13 +278,12 @@ function successAjax(xhttp) {
   var modifiedDatas = mergeUnknowsWithSortedNumbers(userDatas);
   insertPicturesAfterAlphabetN(modifiedDatas);
   var spaceshipList = document.querySelector('.spaceship-list');
-  // intoHTMLSpaceShipList(modifiedDatas, spaceshipList);
   createContentToHTML(modifiedDatas, spaceshipList);
   searchForCrew1Ships(modifiedDatas, spaceshipList);
   searchForBiggestCargoCapacity(modifiedDatas, spaceshipList);
   sumAllPassengers(modifiedDatas, spaceshipList);
   searchForLongestShipImageName(modifiedDatas, spaceshipList);
-  searchForModels(modifiedDatas);
+  createSearchEvent(modifiedDatas);
   addEvents();
 }
 getData('/json/spaceships.json', successAjax);

@@ -85,3 +85,10 @@ div{
   right: 100px;
   bottom: 80px;
 }
+
+.ships-stats {
+  font-weight: bold;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 16pt;
+  padding: 10px;
+}
