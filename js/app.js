@@ -119,7 +119,7 @@ function thisDivToTheSide(mouseEvent) {
 
 function createEmptyDivToTheSide() {
   var sideDiv = document.querySelector('.one-spaceship');
-  sideDiv.style.color = 'white';
+  // sideDiv.style.color = 'white';
   var divToTheSide = document.createElement('div');
   divToTheSide.id = 'divToDelete';
   return {
@@ -244,8 +244,7 @@ function putToTheSideDivFound(modifiedDatasInput) {
   content += ` <img src='../img/${modifiedDatasInput.image}' alt='${modifiedDatasInput.model}>`;
   myDiv.innerHTML = content;
   // ! Közvetlen sem rakja bele
-  // myDiv.innerHTML = `<img src='../img/${modifiedDatasInput.image}' alt='${modifiedDatasInput.model}>`;
-  console.log(content); // ! A content változóban viszont ott díszeleg.
+  // console.log(content); // ! A content változóban viszont ott díszeleg.
   sideDiv.appendChild(myDiv);
 }
 
@@ -253,7 +252,7 @@ function putToTheSideDivNotFound() {
   deletePreviousDivFromTheSide();
   var myDiv = createEmptyDivToTheSide().divToTheSide;
   var sideDiv = createEmptyDivToTheSide().sideDiv;
-  myDiv.innerHTML = '<img src=\'../img/notFound.png\' style=\'display:block; margin:0 auto\'/>';
+  myDiv.innerHTML = '<img src=\'../img/notFound.png\' class="image-not-found"/>';
   sideDiv.appendChild(myDiv);
 }
 

@@ -34,6 +34,7 @@ div{
 .one-spaceship{
   width: 100%;
   background:  #000;
+  color: white
 }
 
 .searchbar{
@@ -91,4 +92,9 @@ div{
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 16pt;
   padding: 10px;
+}
+
+.image-not-found {
+  display: block;
+  margin: 0 auto
 }
